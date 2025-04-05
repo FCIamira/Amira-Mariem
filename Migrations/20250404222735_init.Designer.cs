@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FreelanceManager.Migrations
 {
     [DbContext(typeof(ITIContext))]
-    [Migration("20250404204601_init")]
+    [Migration("20250404222735_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -264,6 +264,9 @@ namespace FreelanceManager.Migrations
                     b.Property<TimeSpan>("Duration")
                         .HasColumnType("time");
 
+                    b.Property<DateTime?>("EndTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<TimeSpan>("EstimateTime")
                         .HasColumnType("time");
 
@@ -272,6 +275,9 @@ namespace FreelanceManager.Migrations
 
                     b.Property<int>("MissionId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("StartTime")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 

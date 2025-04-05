@@ -1,8 +1,100 @@
-﻿
-@{
-    ViewData["Title"] = "Index";
+﻿@{
+    ViewData["Title"] = "Elegant Stopwatch";
 }
 
+<div class="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center p-4">
+    <div class="bg-slate-800/70 backdrop-blur-md rounded-3xl shadow-xl overflow-hidden border border-slate-700/40 w-full max-w-md transition-all hover:shadow-indigo-500/20">
+        <!-- Display -->
+        <div class="p-8 bg-gradient-to-b from-slate-900/80 to-slate-800/50 border-b border-slate-700/30">
+            <div id="stopwatch" class="text-6xl font-mono text-center font-medium text-indigo-300 tracking-tight">
+                00:00:00.<span class="text-indigo-200">0</span>
+            </div>
+        </div>
 
-<h1>Index</h1>
+        <!-- Controls -->
+        <div class="p-6 flex justify-center space-x-4">
+            <button onclick="start()" class="relative overflow-hidden px-8 py-3 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white font-medium shadow-md hover:shadow-emerald-500/30 transition-all hover:scale-[1.02] active:scale-95 group">
+                <span class="relative z-10 flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+                    </svg>
+                    Start
+                </span>
+                <span class="absolute inset-0 bg-gradient-to-br from-emerald-400 to-teal-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+            </button>
 
+            <button onclick="stop()" class="relative overflow-hidden px-8 py-3 rounded-xl bg-gradient-to-br from-rose-500 to-pink-600 text-white font-medium shadow-md hover:shadow-rose-500/30 transition-all hover:scale-[1.02] active:scale-95 group">
+                <span class="relative z-10 flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clip-rule="evenodd" />
+                    </svg>
+                    Stop
+                </span>
+                <span class="absolute inset-0 bg-gradient-to-br from-rose-400 to-pink-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+            </button>
+
+            <button onclick="reset()" class="relative overflow-hidden px-8 py-3 rounded-xl bg-gradient-to-br from-slate-600 to-slate-700 text-white font-medium shadow-md hover:shadow-slate-500/20 transition-all hover:scale-[1.02] active:scale-95 group">
+                <span class="relative z-10 flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
+                    </svg>
+                    Reset
+                </span>
+                <span class="absolute inset-0 bg-gradient-to-br from-slate-500 to-slate-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let timer;
+    let running = false;
+    let startTime;
+    let elapsedTime = 0;
+
+    function updateDisplay() {
+        const totalMs = elapsedTime + (running ? Date.now() - startTime : 0);
+        const hours = Math.floor(totalMs / 3600000).toString().padStart(2, '0');
+        const minutes = Math.floor((totalMs % 3600000) / 60000).toString().padStart(2, '0');
+        const seconds = Math.floor((totalMs % 60000) / 1000).toString().padStart(2, '0');
+        const tenths = Math.floor((totalMs % 1000) / 100);
+
+        const display = document.getElementById('stopwatch');
+        display.innerHTML = `${hours}:${minutes}:${seconds}.<span class="text-indigo-200">${tenths}</span>`;
+
+        // Add subtle glow when running
+        if (running) {
+            display.classList.add('text-indigo-300', 'drop-shadow-[0_0_8px_rgba(129,140,248,0.6)]');
+        } else {
+            display.classList.remove('text-indigo-300', 'drop-shadow-[0_0_8px_rgba(129,140,248,0.6)]');
+            display.classList.add('text-indigo-300');
+        }
+    }
+
+    function start() {
+        if (!running) {
+            startTime = Date.now();
+            running = true;
+            timer = setInterval(updateDisplay, 100);
+            updateDisplay();
+        }
+    }
+
+    function stop() {
+        if (running) {
+            elapsedTime += Date.now() - startTime;
+            running = false;
+            clearInterval(timer);
+            updateDisplay();
+        }
+    }
+
+    function reset() {
+        stop();
+        elapsedTime = 0;
+        updateDisplay();
+    }
+
+    // Initialize display
+    updateDisplay();
+</script>

@@ -261,6 +261,9 @@ namespace FreelanceManager.Migrations
                     b.Property<TimeSpan>("Duration")
                         .HasColumnType("time");
 
+                    b.Property<DateTime?>("EndTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<TimeSpan>("EstimateTime")
                         .HasColumnType("time");
 
@@ -269,6 +272,9 @@ namespace FreelanceManager.Migrations
 
                     b.Property<int>("MissionId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("StartTime")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
